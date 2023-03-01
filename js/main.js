@@ -4,11 +4,12 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas') });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
-const cube = new THREE.Mesh(geometry, material);
+const geometry = new THREE.SphereGeometry();
+const wireframeGeometry = new THREE.WireframeGeometry(geometry);
+const material = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
+const sphere = new THREE.LineSegments(wireframeGeometry, material);
 
-scene.add(cube);
+scene.add(sphere);
 camera.position.z = 5;
 
 // add event listeners to canvas for mouse interaction
@@ -40,7 +41,7 @@ document.addEventListener('mousemove', event => {
       'XYZ'
     ));
 
-  cube.quaternion.multiplyQuaternions(deltaRotationQuaternion, cube.quaternion);
+  sphere.quaternion.multiplyQuaternions(deltaRotationQuaternion, sphere.quaternion);
 
   previousMousePosition = {
     x: event.offsetX,
@@ -79,7 +80,7 @@ function setupWebSocket() {
     console.log(data);
 
     // set the color of the material based on the data
-    cube.material.color.setRGB(red, green, blue);
+    sphere.material.color.setRGB(red, green, blue);
   });
 
   socket.addEventListener('close', event => {
