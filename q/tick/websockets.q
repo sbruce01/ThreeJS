@@ -13,7 +13,7 @@ if[not system"p";system"p 5222"]
 .u.x:.z.x,(count .z.x)_enlist":5000"
 tph:hopen`$":",.u.x 0
 
-upd:{0N!(x;y);if[.ws.handle>0i;neg[.ws.handle].j.j 1?10f]}
+upd:{0N!(x;y);if[.ws.handle>0i;neg[.ws.handle].j.j `blue`red`green!(first 1?2i;first 1?2i;first 1?2i)]}
 
 .u.x:.z.x,(count .z.x)_enlist":5000"
 

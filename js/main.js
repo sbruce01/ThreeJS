@@ -4,11 +4,42 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas') });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
-const cube = new THREE.Mesh(geometry, material);
+const geometry = new THREE.SphereGeometry();
+const wireframeGeometry = new THREE.WireframeGeometry(geometry);
+const material = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
+const sphere = new THREE.LineSegments(wireframeGeometry, material);
 
-scene.add(cube);
+// modify vertex colors
+const positionAttribute = wireframeGeometry.attributes.position;
+const colors = [];
+for (let i = 0; i < positionAttribute.count; i++) {
+  colors.push(1.0, 1.0, 1.0); // set initial color to white
+}
+wireframeGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+// set up shader material
+const shaderMaterial = new THREE.ShaderMaterial({
+  vertexColors: true,
+  vertexShader: `
+    varying vec3 vColor;
+
+    void main() {
+      vColor = color;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vColor;
+
+    void main() {
+      gl_FragColor = vec4(vColor, 1.0);
+    }
+  `
+});
+
+sphere.material = shaderMaterial;
+
+scene.add(sphere);
 camera.position.z = 5;
 
 // add event listeners to canvas for mouse interaction
@@ -40,7 +71,7 @@ document.addEventListener('mousemove', event => {
       'XYZ'
     ));
 
-  cube.quaternion.multiplyQuaternions(deltaRotationQuaternion, cube.quaternion);
+  sphere.quaternion.multiplyQuaternions(deltaRotationQuaternion, sphere.quaternion);
 
   previousMousePosition = {
     x: event.offsetX,
@@ -75,11 +106,15 @@ function setupWebSocket() {
     const data = JSON.parse(event.data);
     const red = data.red;
     const green = data.green;
-    const blue = data.blue;   
+    const blue = data.blue;
     console.log(data);
 
-    // set the color of the material based on the data
-    cube.material.color.setRGB(red, green, blue);
+    // modify vertex colors based on data
+    const colorAttribute = wireframeGeometry.attributes.color;
+    for (let i = 0; i < colorAttribute.count; i++) {
+      colorAttribute.setXYZ(i, red, green, blue);
+    }
+    colorAttribute.needsUpdate = true;
   });
 
   socket.addEventListener('close', event => {
@@ -88,6 +123,6 @@ function setupWebSocket() {
 }
 
 document.getElementById('connect-button').addEventListener('click', () => {
-  console.log('Button Clicked');
-  setupWebSocket();
-});
+    console.log('Button Clicked');
+    setupWebSocket();
+  });

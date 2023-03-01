@@ -1,1 +1,2 @@
-./q/logs/*.log
+*.log
+OnDiskDB
