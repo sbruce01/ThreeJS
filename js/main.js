@@ -1,5 +1,3 @@
-const socket = new WebSocket('ws://localhost:8080');
-
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
@@ -64,3 +62,32 @@ function animate() {
 }
 
 animate();
+
+function setupWebSocket() {
+  const socket = new WebSocket('ws://localhost:5222');
+
+  socket.addEventListener('open', () => {
+    console.log('WebSocket connection established');
+  });
+
+  socket.addEventListener('message', event => {
+    // parse the incoming message as a JSON object
+    const data = JSON.parse(event.data);
+    const red = data.red;
+    const green = data.green;
+    const blue = data.blue;   
+    console.log(data);
+
+    // set the color of the material based on the data
+    cube.material.color.setRGB(red, green, blue);
+  });
+
+  socket.addEventListener('close', event => {
+    console.log(`WebSocket connection closed with code ${event.code}`);
+  });
+}
+
+document.getElementById('connect-button').addEventListener('click', () => {
+  console.log('Button Clicked');
+  setupWebSocket();
+});
