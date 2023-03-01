@@ -9,6 +9,36 @@ const wireframeGeometry = new THREE.WireframeGeometry(geometry);
 const material = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
 const sphere = new THREE.LineSegments(wireframeGeometry, material);
 
+// modify vertex colors
+const positionAttribute = wireframeGeometry.attributes.position;
+const colors = [];
+for (let i = 0; i < positionAttribute.count; i++) {
+  colors.push(1.0, 1.0, 1.0); // set initial color to white
+}
+wireframeGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+// set up shader material
+const shaderMaterial = new THREE.ShaderMaterial({
+  vertexColors: true,
+  vertexShader: `
+    varying vec3 vColor;
+
+    void main() {
+      vColor = color;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vColor;
+
+    void main() {
+      gl_FragColor = vec4(vColor, 1.0);
+    }
+  `
+});
+
+sphere.material = shaderMaterial;
+
 scene.add(sphere);
 camera.position.z = 5;
 
@@ -76,11 +106,15 @@ function setupWebSocket() {
     const data = JSON.parse(event.data);
     const red = data.red;
     const green = data.green;
-    const blue = data.blue;   
+    const blue = data.blue;
     console.log(data);
 
-    // set the color of the material based on the data
-    sphere.material.color.setRGB(red, green, blue);
+    // modify vertex colors based on data
+    const colorAttribute = wireframeGeometry.attributes.color;
+    for (let i = 0; i < colorAttribute.count; i++) {
+      colorAttribute.setXYZ(i, red, green, blue);
+    }
+    colorAttribute.needsUpdate = true;
   });
 
   socket.addEventListener('close', event => {
@@ -89,6 +123,6 @@ function setupWebSocket() {
 }
 
 document.getElementById('connect-button').addEventListener('click', () => {
-  console.log('Button Clicked');
-  setupWebSocket();
-});
+    console.log('Button Clicked');
+    setupWebSocket();
+  });
