@@ -1,0 +1,105 @@
+"kdb+tick 2.8 2014.03.12"
+"Ingestion Count:"
+`trade`quote`aggregation!0 0 0
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(();();())
+"Opened connection on handle 7. User: sbruce1. Memory usage:384976"
+"Opened connection on handle 8. User: sbruce1. Memory usage:385328"
+"Opened connection on handle 9. User: sbruce1. Memory usage:385360"
+"Opened connection on handle 10. User: sbruce1. Memory usage:385584"
+"Opened connection on handle 11. User: sbruce1. Memory usage:385616"
+"Opened connection on handle 12. User: sbruce1. Memory usage:385776"
+"Opened connection on handle 13. User: sbruce1. Memory usage:386000"
+"Ingestion Count:"
+`trade`quote`aggregation!60 540 590
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!120 1080 1190
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!180 1620 1790
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!240 2160 2390
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!300 2700 2990
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!360 3240 3590
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!420 3780 4190
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!480 4320 4790
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!540 4860 5390
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!600 5400 5990
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!660 5940 6590
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!720 6480 7190
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!780 7020 7790
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!840 7560 8390
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!900 8100 8990
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!960 8640 9590
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!1020 9180 10190
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!1080 9720 10790
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!1140 10260 11390
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!1200 10800 11990
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!1260 11340 12590
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!1320 11880 13190
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+"Ingestion Count:"
+`trade`quote`aggregation!1380 12420 13790
+"Tables and Subscription Ports:"
+`aggregation`quote`trade!(,5009i;5222 5112 5008i;5222 5112 5008i)
+'2023.03.01T03:23:28.824 timeout reporting -- exiting
