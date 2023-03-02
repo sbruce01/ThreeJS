@@ -13,7 +13,16 @@ getask:{[s] prices[s]+getmovement[s]} /generate ask price
   $[0<flag mod 10;
     h(".u.upd";`quote;(.z.p;s;getbid'[s];getask'[s];first 1?1000;first 1?1000)); 
     h(".u.upd";`trade;(.z.p;s;getprice'[s];first 1?1000))];
+  h(".u.upd";`quote;(.z.p;s;getbid'[s];getask'[s];first 1?1000;first 1?1000));
+  h(".u.upd";`quote;(.z.p;s;getbid'[s];getask'[s];first 1?1000;first 1?1000));
+  h(".u.upd";`quote;(.z.p;s;getbid'[s];getask'[s];first 1?1000;first 1?1000));
+  h(".u.upd";`quote;(.z.p;s;getbid'[s];getask'[s];first 1?1000;first 1?1000));
+  h(".u.upd";`quote;(.z.p;s;getbid'[s];getask'[s];first 1?1000;first 1?1000));
+  h(".u.upd";`quote;(.z.p;s;getbid'[s];getask'[s];first 1?1000;first 1?1000));
+  h(".u.upd";`quote;(.z.p;s;getbid'[s];getask'[s];first 1?1000;first 1?1000));
+  h(".u.upd";`quote;(.z.p;s;getbid'[s];getask'[s];first 1?1000;first 1?1000));
+  h(".u.upd";`quote;(.z.p;s;getbid'[s];getask'[s];first 1?1000;first 1?1000));
   flag+:1; }
 
 /trigger timer every 100ms
-\t 100
+\t 1

@@ -5,7 +5,8 @@ if[not "w"=first string .z.o;system "sleep 1"];
 
 \l ../logging.q
 
-upd:{x set y};
+/ upd:{x set y};
+upd:{[x;y]}
 
 / get the ticker plant port, default 5000
 .u.x:.z.x,(count .z.x)_enlist":5000"

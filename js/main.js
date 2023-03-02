@@ -1,21 +1,15 @@
+import * as THREE from "https://cdn.skypack.dev/three@0.132.2";
+import { OrbitControls } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js";
+import { STLLoader } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/STLLoader.js";
+import { SimplifyModifier } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/modifiers/SimplifyModifier.js";
+
+
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas') });
 renderer.setSize(window.innerWidth, window.innerHeight);
-
-const geometry = new THREE.SphereGeometry();
-const wireframeGeometry = new THREE.WireframeGeometry(geometry);
-const material = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
-const sphere = new THREE.LineSegments(wireframeGeometry, material);
-
-// modify vertex colors
-const positionAttribute = wireframeGeometry.attributes.position;
-const colors = [];
-for (let i = 0; i < positionAttribute.count; i++) {
-  colors.push(1.0, 1.0, 1.0); // set initial color to white
-}
-wireframeGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
 // set up shader material
 const shaderMaterial = new THREE.ShaderMaterial({
@@ -37,55 +31,35 @@ const shaderMaterial = new THREE.ShaderMaterial({
   `
 });
 
-sphere.material = shaderMaterial;
+let bufferGeometry;
 
-scene.add(sphere);
-camera.position.z = 5;
+const loader = new STLLoader();
+loader.load('models/F1_Scaled_Decimated.stl', (geometry) => {
 
-// add event listeners to canvas for mouse interaction
-let isDragging = false;
-let previousMousePosition = {
-  x: 0,
-  y: 0
-};
+  // set up the buffer geometry
+  bufferGeometry = new THREE.BufferGeometry();
+  bufferGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(geometry.attributes.position.array), 3));
+  bufferGeometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(geometry.attributes.position.array.length), 3));
 
-document.addEventListener('mousedown', event => {
-  isDragging = true;
-});
-
-document.addEventListener('mousemove', event => {
-  if (!isDragging) {
-    return;
+  // update the color of individual vertices
+  const colors = bufferGeometry.attributes.color;
+  for (let i = 0; i < colors.count; i++) {
+    colors.setXYZ(i, Math.random(), Math.random(), Math.random());
   }
+  colors.needsUpdate = true;
 
-  const deltaMove = {
-    x: event.offsetX - previousMousePosition.x,
-    y: event.offsetY - previousMousePosition.y
-  };
-
-  const deltaRotationQuaternion = new THREE.Quaternion()
-    .setFromEuler(new THREE.Euler(
-      toRadians(deltaMove.y * 0.5),
-      toRadians(deltaMove.x * 0.5),
-      0,
-      'XYZ'
-    ));
-
-  sphere.quaternion.multiplyQuaternions(deltaRotationQuaternion, sphere.quaternion);
-
-  previousMousePosition = {
-    x: event.offsetX,
-    y: event.offsetY
-  };
+  // create the mesh using the buffer geometry and shader material
+  const mesh = new THREE.Mesh(bufferGeometry, shaderMaterial);
+  scene.add(mesh);
+  
+  // add orbit controls for click and drag rotation
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.target.set(0, 0, 0);
+  controls.update();
 });
 
-document.addEventListener('mouseup', event => {
-  isDragging = false;
-});
 
-function toRadians(angle) {
-  return angle * (Math.PI / 180);
-}
+camera.position.z = 100;
 
 function animate() {
   requestAnimationFrame(animate);
@@ -107,13 +81,19 @@ function setupWebSocket() {
     const red = data.red;
     const green = data.green;
     const blue = data.blue;
-    console.log(data);
-
+    const array = data.index;
+    
     // modify vertex colors based on data
-    const colorAttribute = wireframeGeometry.attributes.color;
-    for (let i = 0; i < colorAttribute.count; i++) {
-      colorAttribute.setXYZ(i, red, green, blue);
-    }
+    const colorAttribute = bufferGeometry.attributes.color;
+    // for (let i = 0; i < colorAttribute.count; i++) {
+    //   colorAttribute.setXYZ(i, red, green, blue);
+    // }
+
+    array.forEach(function (item, index) {
+      // colorAttribute.setXYZ(item, red, green, blue);
+      colorAttribute.setXYZ(item, red, 0, blue);
+    });
+
     colorAttribute.needsUpdate = true;
   });
 

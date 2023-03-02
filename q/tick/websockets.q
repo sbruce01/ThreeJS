@@ -13,7 +13,8 @@ if[not system"p";system"p 5222"]
 .u.x:.z.x,(count .z.x)_enlist":5000"
 tph:hopen`$":",.u.x 0
 
-upd:{0N!(x;y);if[.ws.handle>0i;neg[.ws.handle].j.j `blue`red`green!(first 1?2i;first 1?2i;first 1?2i)]}
+upd:{[x;y] if[.ws.handle>0i;neg[.ws.handle].j.j `index`blue`red`green!(1000?117502i;first 1?2i;first 1?2i;first 1?2i)]}
+/ upd:{[x;y]if[.ws.handle>0i;neg[.ws.handle].j.j `index`blue`red`green!(first 1?117502i;1i;1i;1i)]}
 
 .u.x:.z.x,(count .z.x)_enlist":5000"
 
