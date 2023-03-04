@@ -3,7 +3,9 @@ import { OrbitControls } from "https://cdn.skypack.dev/three@0.132.2/examples/js
 import { STLLoader } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/STLLoader.js";
 import { SimplifyModifier } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/modifiers/SimplifyModifier.js";
 
-
+const length_x = (26.2768497467041 + 26.2768497467041);
+const length_y = (61.50607681274414 + 61.57312774658203);
+const length_z = (13.852421760559082 + 0.015190325677394867);
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -31,10 +33,12 @@ const shaderMaterial = new THREE.ShaderMaterial({
   `
 });
 
+
 let bufferGeometry;
 
 const loader = new STLLoader();
-loader.load('models/F1_Scaled_Decimated.stl', (geometry) => {
+// loader.load('models/F1_Scaled_Decimated.stl', (geometry) => {
+loader.load('models/CompiledModel.stl', (geometry) => {
 
   // set up the buffer geometry
   bufferGeometry = new THREE.BufferGeometry();
@@ -44,7 +48,7 @@ loader.load('models/F1_Scaled_Decimated.stl', (geometry) => {
   // update the color of individual vertices
   const colors = bufferGeometry.attributes.color;
   for (let i = 0; i < colors.count; i++) {
-    colors.setXYZ(i, Math.random(), Math.random(), Math.random());
+    colors.setXYZ(i, 0.8, 0.8, 0.8);
   }
   colors.needsUpdate = true;
 
@@ -59,7 +63,7 @@ loader.load('models/F1_Scaled_Decimated.stl', (geometry) => {
 });
 
 
-camera.position.z = 100;
+camera.position.z = 2;
 
 function animate() {
   requestAnimationFrame(animate);
@@ -67,6 +71,22 @@ function animate() {
 }
 
 animate();
+
+function calculatePressures(bufferGeometry) {
+  // Calculate the pressure value for each vertex
+  const pressures = new Float32Array(bufferGeometry.attributes.position.array.length / 3);
+  for (let i = 0; i < pressures.length; i++) {
+    const x = bufferGeometry.attributes.position.getX(i);
+    const y = bufferGeometry.attributes.position.getY(i);
+    const z = bufferGeometry.attributes.position.getZ(i);
+
+    // Replace this with your own pressure calculation logic
+    // pressures[i] = Math.sin(x * y);
+    pressures[i] = Math.sin((x/length_x)*(y/length_y)*(z/length_z));
+  }
+  return pressures;
+}
+
 
 function setupWebSocket() {
   const socket = new WebSocket('ws://localhost:5222');
@@ -82,18 +102,29 @@ function setupWebSocket() {
     const green = data.green;
     const blue = data.blue;
     const array = data.index;
-    
-    // modify vertex colors based on data
+    // const index = data.index;
+
     const colorAttribute = bufferGeometry.attributes.color;
+    
+    // Pressures Updating (based on geometry)
+    const pressures = calculatePressures(bufferGeometry);
+    for (let i = 0; i < colorAttribute.count; i++) {
+      colorAttribute.setXYZ(i, 0.1, 0.1, 1-pressures[i]);
+    }
+    
+
+    // Entire Thing Updated
     // for (let i = 0; i < colorAttribute.count; i++) {
     //   colorAttribute.setXYZ(i, red, green, blue);
     // }
 
-    array.forEach(function (item, index) {
-      // colorAttribute.setXYZ(item, red, green, blue);
-      colorAttribute.setXYZ(item, red, 0, blue);
-    });
-
+    // Bulk updating colours based on array of indexes
+    // array.forEach(function (item, index) {
+    //   colorAttribute.setXYZ(item, red, green, blue);
+    //   // colorAttribute.setXYZ(item, red, 0, blue);
+    //   // colorAttribute.setXYZ(item, red, 0, 0);
+    // });
+    // colorAttribute.setXYZ(index, 1, 0, 0);
     colorAttribute.needsUpdate = true;
   });
 
