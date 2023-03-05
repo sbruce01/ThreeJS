@@ -1,7 +1,6 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.132.2";
 import { OrbitControls } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js";
 import { STLLoader } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/STLLoader.js";
-import { SimplifyModifier } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/modifiers/SimplifyModifier.js";
 
 const length_x = (26.2768497467041 + 26.2768497467041);
 const length_y = (61.50607681274414 + 61.57312774658203);
@@ -35,6 +34,7 @@ const shaderMaterial = new THREE.ShaderMaterial({
 
 
 let bufferGeometry;
+let wireframe;
 
 const loader = new STLLoader();
 // loader.load('models/F1_Scaled_Decimated.stl', (geometry) => {
@@ -43,24 +43,30 @@ loader.load('models/CompiledModel.stl', (geometry) => {
   // set up the buffer geometry
   bufferGeometry = new THREE.BufferGeometry();
   bufferGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(geometry.attributes.position.array), 3));
-  bufferGeometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(geometry.attributes.position.array.length), 3));
-
+  // bufferGeometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(geometry.attributes.position.array.length), 3));
+  wireframe = new THREE.WireframeGeometry( bufferGeometry );  
+  
+  wireframe.setAttribute('color', new THREE.BufferAttribute(new Float32Array(geometry.attributes.position.array.length), 3));
+  
   // update the color of individual vertices
-  const colors = bufferGeometry.attributes.color;
+  const colors = wireframe.attributes.color;
   for (let i = 0; i < colors.count; i++) {
-    colors.setXYZ(i, 0.8, 0.8, 0.8);
+    colors.setXYZ(i, 1, 0, 0);
   }
+
+  const car = new THREE.LineSegments( wireframe, shaderMaterial );
+  
   colors.needsUpdate = true;
 
-  // create the mesh using the buffer geometry and shader material
-  const mesh = new THREE.Mesh(bufferGeometry, shaderMaterial);
-  scene.add(mesh);
+  scene.add( car );
   
   // add orbit controls for click and drag rotation
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 0, 0);
   controls.update();
 });
+
+
 
 
 camera.position.z = 2;
@@ -104,13 +110,15 @@ function setupWebSocket() {
     const array = data.index;
     // const index = data.index;
 
-    const colorAttribute = bufferGeometry.attributes.color;
+    // const colorAttribute = bufferGeometry.attributes.color;
+    const colorAttribute = wireframe.attributes.color;
     
+    console.log('test');
     // Pressures Updating (based on geometry)
-    const pressures = calculatePressures(bufferGeometry);
-    for (let i = 0; i < colorAttribute.count; i++) {
-      colorAttribute.setXYZ(i, 0.1, 0.1, 1-pressures[i]);
-    }
+    // const pressures = calculatePressures(bufferGeometry);
+    // for (let i = 0; i < colorAttribute.count; i++) {
+    //   colorAttribute.setXYZ(i, 0.1, 0.1, 1-pressures[i]);
+    // }
     
 
     // Entire Thing Updated
@@ -119,11 +127,11 @@ function setupWebSocket() {
     // }
 
     // Bulk updating colours based on array of indexes
-    // array.forEach(function (item, index) {
-    //   colorAttribute.setXYZ(item, red, green, blue);
-    //   // colorAttribute.setXYZ(item, red, 0, blue);
-    //   // colorAttribute.setXYZ(item, red, 0, 0);
-    // });
+    array.forEach(function (item, index) {
+      colorAttribute.setXYZ(item, red, green, blue);
+      // colorAttribute.setXYZ(item, red, 0, blue);
+      // colorAttribute.setXYZ(item, red, 0, 0);
+    });
     // colorAttribute.setXYZ(index, 1, 0, 0);
     colorAttribute.needsUpdate = true;
   });

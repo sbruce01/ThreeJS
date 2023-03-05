@@ -18,4 +18,4 @@ getask:{[s] prices[s]+getmovement[s]} /generate ask price
   flag+:1; }
 
 /trigger timer every 100ms
-\t 1
+\t 100
