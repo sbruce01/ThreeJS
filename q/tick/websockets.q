@@ -9,11 +9,17 @@ if[not "w"=first string .z.o;system "sleep 1"]
 if[not system"p";system"p 5222"]
 
 .ws.handle:-1i;
+.count.i:0i;
 
 .u.x:.z.x,(count .z.x)_enlist":5000"
 tph:hopen`$":",.u.x 0
 
-upd:{0N!(x;y);if[.ws.handle>0i;neg[.ws.handle].j.j `blue`red`green!(first 1?2i;first 1?2i;first 1?2i)]}
+// Bulk based on indexes
+upd:{[x;y] if[.ws.handle>0i;neg[.ws.handle].j.j `index`blue`red`green!(1000?1177263i;first 1?1f;first 1?1f;first 1?1f)]}
+
+// Increasing based on indexes
+/ upd:{[x;y] if[.ws.handle>0i;neg[.ws.handle].j.j `index`blue`red`green!(.count.i;first 1?2i;first 1?2i;first 1?2i);.count.i+:1;.count.i:.count.i mod 117502]}
+
 
 .u.x:.z.x,(count .z.x)_enlist":5000"
 

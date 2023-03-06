@@ -13,6 +13,8 @@ getask:{[s] prices[s]+getmovement[s]} /generate ask price
   $[0<flag mod 10;
     h(".u.upd";`quote;(.z.p;s;getbid'[s];getask'[s];first 1?1000;first 1?1000)); 
     h(".u.upd";`trade;(.z.p;s;getprice'[s];first 1?1000))];
+    {[h;x] h(".u.upd";`quote;x)}[h;]each 1000#enlist (.z.p;s;getbid'[s];getask'[s];first 1?1000;first 1?1000);
+
   flag+:1; }
 
 /trigger timer every 100ms
