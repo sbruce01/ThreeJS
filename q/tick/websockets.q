@@ -15,7 +15,7 @@ if[not system"p";system"p 5222"]
 tph:hopen`$":",.u.x 0
 
 // Bulk based on indexes
-upd:{[x;y] if[.ws.handle>0i;neg[.ws.handle].j.j `index`blue`red`green!(1000?117502i;first 1?1f;first 1?1f;first 1?1f)]}
+upd:{[x;y] if[.ws.handle>0i;neg[.ws.handle].j.j `index`blue`red`green!(1000?1177263i;first 1?1f;first 1?1f;first 1?1f)]}
 
 // Increasing based on indexes
 / upd:{[x;y] if[.ws.handle>0i;neg[.ws.handle].j.j `index`blue`red`green!(.count.i;first 1?2i;first 1?2i;first 1?2i);.count.i+:1;.count.i:.count.i mod 117502]}

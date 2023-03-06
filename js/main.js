@@ -1,10 +1,16 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.132.2";
 import { OrbitControls } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js";
 import { STLLoader } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/STLLoader.js";
+import {csv} from "https://cdn.skypack.dev/d3-fetch@3";
 
-const length_x = (26.2768497467041 + 26.2768497467041);
-const length_y = (61.50607681274414 + 61.57312774658203);
-const length_z = (13.852421760559082 + 0.015190325677394867);
+const positions = [];
+const scale_value = 3;
+
+csv("../example_data/Pressure/FASTBACK_Pressure_Tapping_Map.csv").then((data) => {
+  for (let i = 0; i < data.length; i++) {
+    positions.push(parseFloat(scale_value*data[i].x), parseFloat(scale_value*data[i].y), parseFloat(scale_value*data[i].z));
+  }
+});
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -48,6 +54,7 @@ loader.load('models/CompiledModel.stl', (geometry) => {
   
   wireframe.setAttribute('color', new THREE.BufferAttribute(new Float32Array(geometry.attributes.position.array.length), 3));
   
+  
   // update the color of individual vertices
   const colors = wireframe.attributes.color;
   for (let i = 0; i < colors.count; i++) {
@@ -57,6 +64,28 @@ loader.load('models/CompiledModel.stl', (geometry) => {
   const car = new THREE.LineSegments( wireframe, shaderMaterial );
   
   colors.needsUpdate = true;
+
+  const mappedPoints = getLocations(bufferGeometry, positions);
+
+  const box = new THREE.BoxGeometry( 1, 1, 1 );
+
+  console.log(mappedPoints[0][0]);
+  console.log(mappedPoints[0][1]);
+  console.log(mappedPoints[0][2]);
+
+  for ( let p = 0; p < mappedPoints.length; p ++ ) {
+    const object = new THREE.Mesh( box, new THREE.MeshBasicMaterial() );
+    object.scale.set(0.01, 0.01, 0.01);
+
+    object.position.x = mappedPoints[p][0];
+    object.position.y = mappedPoints[p][1];
+    object.position.z = mappedPoints[p][2];
+
+
+    scene.add( object );
+
+  }
+
 
   scene.add( car );
   
@@ -78,19 +107,36 @@ function animate() {
 
 animate();
 
-function calculatePressures(bufferGeometry) {
-  // Calculate the pressure value for each vertex
-  const pressures = new Float32Array(bufferGeometry.attributes.position.array.length / 3);
-  for (let i = 0; i < pressures.length; i++) {
-    const x = bufferGeometry.attributes.position.getX(i);
-    const y = bufferGeometry.attributes.position.getY(i);
-    const z = bufferGeometry.attributes.position.getZ(i);
+function getLocations(bufferGeometry, positions) {
+  
+  console.log(bufferGeometry.attributes.position.array);
 
-    // Replace this with your own pressure calculation logic
-    // pressures[i] = Math.sin(x * y);
-    pressures[i] = Math.sin((x/length_x)*(y/length_y)*(z/length_z));
+  const closestPoints = [];
+  for (let i = 0; i < positions.length / 3; i++) {
+    let closestPoint;
+    let closestDistance = Number.MAX_VALUE;
+
+    for (let j = 0; j < bufferGeometry.attributes.position.array.length / 3; j++) {
+      const xb = bufferGeometry.attributes.position.getX(j);
+      const yb = bufferGeometry.attributes.position.getY(j);
+      const zb = bufferGeometry.attributes.position.getZ(j);
+  
+      const xp = positions[0+i*3];
+      const yp = positions[1+i*3];
+      const zp = positions[2+i*3];
+  
+      const distance = Math.sqrt(Math.pow(xb - xp, 2) + Math.pow(yb - yp, 2) + Math.pow(zb - zp, 2));
+
+      if (distance < closestDistance){
+        closestPoint = [xb, yb, zb];
+        closestDistance = distance;
+      }
+  
+      }
+      
+      closestPoints.push(closestPoint);
   }
-  return pressures;
+  return closestPoints
 }
 
 
@@ -113,7 +159,6 @@ function setupWebSocket() {
     // const colorAttribute = bufferGeometry.attributes.color;
     const colorAttribute = wireframe.attributes.color;
     
-    console.log('test');
     // Pressures Updating (based on geometry)
     // const pressures = calculatePressures(bufferGeometry);
     // for (let i = 0; i < colorAttribute.count; i++) {
@@ -143,5 +188,6 @@ function setupWebSocket() {
 
 document.getElementById('connect-button').addEventListener('click', () => {
     console.log('Button Clicked');
+    // getLocations(bufferGeometry, positions);
     setupWebSocket();
   });
